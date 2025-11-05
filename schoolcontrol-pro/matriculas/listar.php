@@ -26,12 +26,25 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <title>Listagem de Matrículas</title>
-    <link rel="stylesheet" href="assets/CSS/style.css">
+    <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
     <h1>Listagem de Matrículas</h1>
 
-    <table>
+    <div class="filtros">
+        <input type="text" id="busca" placeholder="Buscar por aluno, turma, disciplina ou professor...">
+        <select id="filtroTurma">
+            <option value="">Filtrar por turma</option>
+            <?php
+            $turmas = $conn->query("SELECT DISTINCT nome FROM turmas ORDER BY nome");
+            while ($t = $turmas->fetch_assoc()) {
+                echo "<option value='{$t['nome']}'>{$t['nome']}</option>";
+            }
+            ?>
+        </select>
+    </div>
+
+    <table id="tabelaMatriculas">
         <thead>
             <tr>
                 <th>ID Matrícula</th>
@@ -55,11 +68,11 @@ $result = $conn->query($sql);
                     </tr>
                 <?php endwhile; ?>
             <?php else: ?>
-                <tr>
-                    <td colspan="6">Nenhuma matrícula encontrada.</td>
-                </tr>
+                <tr><td colspan="6">Nenhuma matrícula encontrada.</td></tr>
             <?php endif; ?>
         </tbody>
     </table>
+
+    <script src="assets/JS/script.js"></script>
 </body>
 </html>
