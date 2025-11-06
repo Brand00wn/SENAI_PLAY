@@ -75,5 +75,6 @@ if (isset($_GET['excluir'])) {
       </tbody>
     </table>
   </div>
+  <script src="disciplinas.js"></script>
 </body>
 </html>
