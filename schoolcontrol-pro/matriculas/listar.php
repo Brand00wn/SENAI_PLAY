@@ -26,7 +26,7 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <title>Listagem de Matrículas</title>
-    <link rel="stylesheet" href="estilos.css">
+    <link rel="stylesheet" href="../assets/CSS/style.css">
 </head>
 <body>
     <h1>Listagem de Matrículas</h1>
@@ -73,6 +73,6 @@ $result = $conn->query($sql);
         </tbody>
     </table>
 
-    <script src="assets/JS/script.js"></script>
+    <script src="../assets/JS/script.js"></script>
 </body>
 </html>
