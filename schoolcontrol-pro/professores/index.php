@@ -24,14 +24,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" || $_SERVER["REQUEST_METHOD"] === "PUT
     $tel = $data["telefone"] ?? "";
 
     if ($id) {
-        // Atualizar professor
-        $sql = "UPDATE professores SET nome=?, disciplina=?, email=?, telefone=? WHERE id=?";
+        
+        $sql = "UPDATE professor SET nome=?, disciplina=?, email=?, telefone=? WHERE id=?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssssi", $nome, $dis, $email, $tel, $id);
         $stmt->execute();
     } else {
-        // Inserir novo professor
-        $sql = "INSERT INTO professores (nome, disciplina, email, telefone) VALUES (?, ?, ?, ?)";
+        
+        $sql = "INSERT INTO professor (nome, disciplina, email, telefone) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssss", $nome, $dis, $email, $tel);
         $stmt->execute();
@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] === "DELETE") {
     $id = $data["id"] ?? null;
 
     if ($id) {
-        $conn->query("DELETE FROM professores WHERE id=$id");
+        $conn->query("DELETE FROM professor WHERE id=$id");
         echo json_encode(["message" => "Professor excluído com sucesso."]);
     } else {
         echo json_encode(["error" => "ID não fornecido."]);
@@ -57,16 +57,16 @@ if ($_SERVER["REQUEST_METHOD"] === "DELETE") {
     exit;
 }
 
-// Carregar todos os professores (GET)
+
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
-    $result = $conn->query("SELECT * FROM professores ORDER BY id DESC");
-    $professores = [];
+    $result = $conn->query("SELECT * FROM professor ORDER BY id DESC");
+    $professor = [];
     
     while ($row = $result->fetch_assoc()) {
-        $professores[] = $row;
+        $professor[] = $row;
     }
 
-    echo json_encode($professores);
+    echo json_encode($professor);
     exit;
 }
 
