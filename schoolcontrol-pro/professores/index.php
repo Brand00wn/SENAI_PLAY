@@ -2,7 +2,7 @@
 
 $host = "localhost";
 $user = "root";
-$pass = "";
+$pass = "alunolab";
 $dbname = "schoolcontropro";
 
 $conn = new mysqli($host, $user, $pass, $dbname);
@@ -19,12 +19,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $tel = $_POST["tel"] ?? "";
 
     if ($id) {
-        $sql = "UPDATE professores SET nome=?, disciplina=?, email=?, telefone=? WHERE id=?";
+        $sql = "UPDATE professor SET nome=?, disciplina=?, email=?, telefone=? WHERE id=?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssssi", $nome, $dis, $email, $tel, $id);
         $stmt->execute();
     } else {
-        $sql = "INSERT INTO professores (nome, disciplina, email, telefone) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO professor (nome, disciplina, email, telefone) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssss", $nome, $dis, $email, $tel);
         $stmt->execute();
@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 if (isset($_GET["excluir"])) {
     $id = intval($_GET["excluir"]);
-    $conn->query("DELETE FROM professores WHERE id=$id");
+    $conn->query("DELETE FROM professor WHERE id=$id");
     header("Location: index.php");
     exit;
 }
@@ -46,21 +46,21 @@ if (isset($_GET["excluir"])) {
 $editar = null;
 if (isset($_GET["editar"])) {
     $id_edit = intval($_GET["editar"]);
-    $result_edit = $conn->query("SELECT * FROM professores WHERE id=$id_edit");
+    $result_edit = $conn->query("SELECT * FROM professor WHERE id=$id_edit");
     if ($result_edit->num_rows > 0) {
         $editar = $result_edit->fetch_assoc();
     }
 }
 
 
-$result = $conn->query("SELECT * FROM professores ORDER BY id DESC");
+$result = $conn->query("SELECT * FROM professor ORDER BY id DESC");
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Cadastro Professores - School Contro Pro</title>
+  <title>Cadastro professor - School Contro Pro</title>
   <link rel="stylesheet" href="../assets/CSS/style.css" />
 </head>
 <body>
@@ -74,13 +74,13 @@ $result = $conn->query("SELECT * FROM professores ORDER BY id DESC");
       <li><a href="../alunos/index.php">Alunos</a></li>
       <li><a href="../turmas/index.php">Turmas</a></li>
       <li><a href="../disciplinas/index.php">Disciplinas</a></li>
-      <li><a href="index.php" class="active">Professores</a></li>
+      <li><a href="index.php" class="active">professor</a></li>
       <li><a href="../matriculas/index.php">Matrículas</a></li>
     </ul>
   </nav>
 
   <main>
-    <h1>Cadastro de Professores</h1>
+    <h1>Cadastro de professor</h1>
 
     <form id="formprof" method="POST" action="">
       <input type="hidden" name="id" id="id" value="<?= $editar['id'] ?? '' ?>" />
@@ -107,7 +107,7 @@ $result = $conn->query("SELECT * FROM professores ORDER BY id DESC");
       <?php endif; ?>
     </form>
 
-    <h2>Lista de Professores</h2>
+    <h2>Lista de Professor</h2>
     <table>
       <thead>
         <tr>

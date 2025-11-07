@@ -24,6 +24,9 @@
   <main>
     <p>(Texto de apresentação do projeto)</p>
   </main>
+  <footer>
+  <p>© 2025 School Contro Pro — Todos os direitos reservados</p>
+</footer>
 
   <script src="assets/JS/script.js" defer></script>
 </body>
