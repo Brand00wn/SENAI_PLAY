@@ -57,7 +57,7 @@ $matriculas = $conn->query("
         <h2>Matricula</h2>
         <form action="listar.php" method="POST">
 
-       label for="aluno">Aluno:</label>
+       <label for="aluno">Aluno:</label>
         <select id="aluno" name="id_aluno" required>
             <option value="">Selecione um aluno</option>
             <?php while ($a = $alunos->fetch_assoc()): ?>
