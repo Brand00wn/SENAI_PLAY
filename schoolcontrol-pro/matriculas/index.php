@@ -32,7 +32,7 @@ $matriculas = $conn->query("
 <head>
     <meta charset="UTF-8">
     <title>Gestão de Eventos</title>
-    <link rel="stylesheet" href="assets/CSS/style.css">
+    <link rel="stylesheet" href="../assets/CSS/style.css">
 </head>
 <body>
 
