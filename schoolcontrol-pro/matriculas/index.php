@@ -1,121 +1,94 @@
 <?php
-require_once "../config/conexao.php";
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id_aluno'], $_POST['id_turma'])) {
-    $id_aluno = $_POST['id_aluno'];
-    $id_turma = $_POST['id_turma'];
-    $data_matricula = date('Y-m-d');
+require_once __DIR__ . '/config/conexao.php';
 
-    $stmt = $conn->prepare("INSERT INTO matriculas (id_aluno, id_turma, data_matricula) VALUES (?, ?, ?)");
-    $stmt->bind_param("iis", $id_aluno, $id_turma, $data_matricula);
-    $stmt->execute();
-    $stmt->close();
+$action = $_GET['action'] ?? '';
+$method = $_SERVER['REQUEST_METHOD'];
+
+try {
+    switch ($action) {
+        // ========== ALUNOS ==========
+        case 'list_alunos':
+            $stmt = $conn->query("SELECT id_aluno, nome, email, telefone FROM alunos ORDER BY nome");
+            echo json_encode(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+            break;
+
+        case 'get_aluno':
+            $id = (int)($_GET['id_aluno'] ?? 0);
+            $stmt = $conn->prepare("SELECT * FROM alunos WHERE id_aluno = ?");
+            $stmt->execute([$id]);
+            echo json_encode(['success' => true, 'data' => $stmt->fetch(PDO::FETCH_ASSOC)]);
+            break;
+
+        case 'create_aluno':
+            $data = json_decode(file_get_contents('php://input'), true);
+            $stmt = $conn->prepare("INSERT INTO alunos (nome, email, telefone) VALUES (?, ?, ?)");
+            $stmt->execute([$data['nome'], $data['email'], $data['telefone']]);
+            echo json_encode(['success' => true]);
+            break;
+
+        case 'update_aluno':
+            $data = json_decode(file_get_contents('php://input'), true);
+            $stmt = $conn->prepare("UPDATE alunos SET nome=?, email=?, telefone=? WHERE id_aluno=?");
+            $stmt->execute([$data['nome'], $data['email'], $data['telefone'], $data['id_aluno']]);
+            echo json_encode(['success' => true]);
+            break;
+
+        case 'delete_aluno':
+            $id = (int)($_GET['id_aluno'] ?? 0);
+            $stmt = $conn->prepare("DELETE FROM alunos WHERE id_aluno=?");
+            $stmt->execute([$id]);
+            echo json_encode(['success' => true]);
+            break;
+
+        // ========== TURMAS ==========
+        case 'list_turmas':
+            $stmt = $conn->query("SELECT id_turma, nome_turma FROM turmas ORDER BY nome_turma");
+            echo json_encode(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+            break;
+
+        // ========== MATRICULAS ==========
+        case 'list_matriculas':
+            $stmt = $conn->query("
+                SELECT m.id_matricula, a.nome AS aluno, t.nome_turma AS turma, m.data_matricula
+                FROM matriculas m
+                JOIN alunos a ON m.id_aluno = a.id_aluno
+                JOIN turmas t ON m.id_turma = t.id_turma
+                ORDER BY m.data_matricula DESC
+            ");
+            echo json_encode(['success' => true, 'data' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+            break;
+
+        case 'create_matricula':
+            $data = json_decode(file_get_contents('php://input'), true);
+            $stmtA = $conn->prepare("SELECT 1 FROM alunos WHERE id_aluno=?");
+            $stmtT = $conn->prepare("SELECT 1 FROM turmas WHERE id_turma=?");
+            $stmtA->execute([$data['id_aluno']]);
+            $stmtT->execute([$data['id_turma']]);
+            if (!$stmtA->fetch() || !$stmtT->fetch()) {
+                echo json_encode(['success' => false, 'error' => 'Aluno ou turma inexistente']);
+                break;
+            }
+            $stmt = $conn->prepare("INSERT INTO matriculas (id_aluno, id_turma, data_matricula) VALUES (?, ?, ?)");
+            $stmt->execute([$data['id_aluno'], $data['id_turma'], $data['data_matricula']]);
+            echo json_encode(['success' => true]);
+            break;
+
+        case 'delete_matricula':
+            $id = (int)($_GET['id_matricula'] ?? 0);
+            $stmt = $conn->prepare("DELETE FROM matriculas WHERE id_matricula=?");
+            $stmt->execute([$id]);
+            echo json_encode(['success' => true]);
+            break;
+
+        default:
+            echo json_encode(['success' => false, 'error' => 'Ação inválida']);
+            break;
+    }
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
-
-// Puxa alunos existentes
-$alunos = $conn->query("SELECT id_aluno, nome FROM alunos ORDER BY nome");
-
-// Puxa turmas existentes
-$turmas = $conn->query("SELECT id_turma, nome FROM turmas ORDER BY nome");
-
-$matriculas = $conn->query("
-    SELECT m.id_matricula, a.nome AS aluno, t.nome AS turma, m.data_matricula
-    FROM matriculas m
-    JOIN alunos a ON a.id_aluno = m.id_aluno
-    JOIN turmas t ON t.id_turma = m.id_turma
-    ORDER BY m.id_matricula DESC
-");
-
-?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Gestão de Eventos</title>
-    <link rel="stylesheet" href="../assets/CSS/style.css">
-</head>
-<body>
-
-<div>
-    <header>
-        <h1>Sistema de Cadastro Acadêmico</h1>
-    </header>
-
-    <nav>
-        <ul>
-        <li><a href="index.php" >Inicio</a></li>
-        <li><a href="alunos/index.php" >Alunos</a></li>
-        <li><a href="turmas/index.php" >Turmas</a></li>
-        <li><a href="disciplinas/index.php">Disciplinas</a></li>
-        <li><a href="professores/index.php">Professores</a></li>
-        <li><a href="matriculas/index.php" class="active">Matrículas</a></li>
-        
-        </ul>
-    </nav>
-  
-    <div>
-        <h2>Matricula</h2>
-        <form action="listar.php" method="POST">
-
-       <label for="aluno">Aluno:</label>
-        <select id="aluno" name="id_aluno" required>
-            <option value="">Selecione um aluno</option>
-            <?php while ($a = $alunos->fetch_assoc()): ?>
-                <option value="<?= $a['id_aluno'] ?>"><?= htmlspecialchars($a['nome']) ?></option>
-            <?php endwhile; ?>
-        </select>
-
-        <br><br>
-
-        <label for="turma">Turma:</label>
-        <select id="turma" name="id_turma" required>
-            <option value="">Selecione uma turma</option>
-            <?php while ($t = $turmas->fetch_assoc()): ?>
-                <option value="<?= $t['id_turma'] ?>"><?= htmlspecialchars($t['nome']) ?></option>
-            <?php endwhile; ?>
-        </select>
-
-        <br><br>
-
-        <button type="submit">Salvar Matrícula</button>
-
-</form>
-    </div>
-
-    <div >
-       <!-- Tabela de matrículas já feitas -->
-    <h2>Matrículas Realizadas</h2>
-    <table border="1" cellpadding="5" cellspacing="0">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Aluno</th>
-                <th>Turma</th>
-                <th>Data da Matrícula</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if ($matriculas && $matriculas->num_rows > 0): ?>
-                <?php while ($m = $matriculas->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= $m['id_matricula'] ?></td>
-                        <td><?= htmlspecialchars($m['aluno']) ?></td>
-                        <td><?= htmlspecialchars($m['turma']) ?></td>
-                        <td><?= date("d/m/Y", strtotime($m['data_matricula'])) ?></td>
-                        <td>
-                            <a href="editar_matricula.php?id=<?= $m['id_matricula'] ?>">Editar</a> |
-                            <a href="excluir_matricula.php?id=<?= $m['id_matricula'] ?>" onclick="return confirm('Deseja realmente excluir?')">Excluir</a>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <tr><td colspan="5">Nenhuma matrícula encontrada.</td></tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-    </div>
-</div>
-
-</body>
-</html>
