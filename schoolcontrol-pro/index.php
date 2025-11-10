@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>School Contro Pro</title>
-  <link rel="stylesheet" href="assets/CSS/style.css" />
+  <link rel="stylesheet" href="../assets/CSS/style.css" />
 </head>
 <body>
     <header>
