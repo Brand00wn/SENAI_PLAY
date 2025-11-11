@@ -125,7 +125,7 @@ if (isset($_GET['excluir'])) {
       <?php endif; ?>
     </tbody>
 
-    <script src="disciplicas.js"></script>
+    <script src="disciplinas.js"></script>
   
   </table>
 </body>
