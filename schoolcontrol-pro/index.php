@@ -15,8 +15,8 @@
       <li><a href="alunos/index.php" >Alunos</a></li>
       <li><a href="turmas/index.php" >Turmas</a></li>
       <li><a href="disciplinas/index.php">Disciplinas</a></li>
-      <li><a href="professores/index.php">Professores</a></li>
-      <li><a href="matriculas/index.php">Matrículas</a></li>
+      <li><a href="professores/index.html">Professores</a></li>
+      <li><a href="matriculas/index.html">Matrículas</a></li>
      
     </ul>
   </nav>

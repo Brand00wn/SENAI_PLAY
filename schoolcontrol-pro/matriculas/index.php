@@ -74,6 +74,25 @@ try {
         exit;
     }
 
+    if ($action === 'update_matricula' && $method === 'POST') {
+        $body = json_decode(file_get_contents('php://input'), true);
+        $id_matricula = isset($body['id_matricula']) ? (int)$body['id_matricula'] : 0;
+        $id_aluno = isset($body['id_aluno']) ? (int)$body['id_aluno'] : 0;
+        $id_turma = isset($body['id_turma']) ? (int)$body['id_turma'] : 0;
+    
+        if (!$id_matricula || !$id_aluno || !$id_turma) {
+            echo json_encode(['success' => false, 'error' => 'Dados inválidos']);
+            exit;
+        }
+    
+        $stmt = $conn->prepare("UPDATE matriculas SET id_aluno = ?, id_turma = ? WHERE id_matricula = ?");
+        $stmt->bind_param("iii", $id_aluno, $id_turma, $id_matricula);
+        $ok = $stmt->execute();
+        echo json_encode(['success' => (bool)$ok]);
+        exit;
+    }
+    
+
     echo json_encode(['success' => false, 'error' => 'Ação inválida']);
 
 } catch (Exception $e) {

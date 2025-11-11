@@ -58,17 +58,50 @@ async function listarMatriculas() {
         <td>${row.aluno ?? ''}</td>
         <td>${row.turma ?? ''}</td>
         <td>${row.data_matricula ?? ''}</td>
-        <td><button class="btn-delete" data-id="${row.id_matricula}">Excluir</button></td>
+        <td>
+          <button class="btn-edit" 
+                  data-id="${row.id_matricula}" 
+                  data-idaluno="${row.id_aluno}" 
+                  data-idturma="${row.id_turma}">
+            Editar
+          </button>
+          <button class="btn-delete" data-id="${row.id_matricula}">Excluir</button>
+        </td>
       `;
       tabela.appendChild(tr);
     });
 
+    // Botão de excluir
     document.querySelectorAll('.btn-delete').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const id = e.currentTarget.dataset.id;
         if (!confirm('Confirma exclusão?')) return;
+
+        // 🔹 Se estiver em modo de edição, limpa
+        const form = document.querySelector('form');
+        delete form.dataset.editingId;
+        document.querySelector('#id_aluno_select').value = '';
+        document.querySelector('#id_turma_select').value = '';
+
         await fetchJSON(`${api}?action=delete_matricula&id_matricula=${id}`);
         listarMatriculas();
+      });
+    });
+
+    // Botão de editar
+    document.querySelectorAll('.btn-edit').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = e.currentTarget.dataset.id;
+        const aluno = e.currentTarget.dataset.idaluno;
+        const turma = e.currentTarget.dataset.idturma;
+
+        // Preenche o formulário com os dados
+        document.querySelector('#id_aluno_select').value = aluno;
+        document.querySelector('#id_turma_select').value = turma;
+
+        // Armazena o ID a ser editado
+        const form = document.querySelector('form');
+        form.dataset.editingId = id;
       });
     });
 
@@ -83,19 +116,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const form = document.querySelector('form');
   if (!form) return;
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id_aluno = document.querySelector('#id_aluno_select').value;
     const id_turma = document.querySelector('#id_turma_select').value;
+    const editId = form.dataset.editingId;
+
     if (!id_aluno || !id_turma) {
       alert("Selecione um aluno e uma turma!");
       return;
     }
-    await fetchJSON(`${api}?action=create_matricula`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id_aluno: parseInt(id_aluno), id_turma: parseInt(id_turma) })
-    });
+
+    if (editId) {
+      // Atualiza matrícula existente
+      await fetchJSON(`${api}?action=update_matricula`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id_matricula: parseInt(editId),
+          id_aluno: parseInt(id_aluno),
+          id_turma: parseInt(id_turma)
+        })
+      });
+      alert("Matrícula atualizada com sucesso!");
+      delete form.dataset.editingId;
+    } else {
+      // Cria nova matrícula
+      await fetchJSON(`${api}?action=create_matricula`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id_aluno: parseInt(id_aluno),
+          id_turma: parseInt(id_turma)
+        })
+      });
+      alert("Matrícula criada com sucesso!");
+    }
+
     listarMatriculas();
     document.querySelector('#id_aluno_select').value = '';
     document.querySelector('#id_turma_select').value = '';
