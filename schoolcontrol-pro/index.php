@@ -11,10 +11,10 @@
     </header>
   <nav>
     <ul>
-      <li><a href="index.php" class="active">Inicio</a></li>
-      <li><a href="alunos/index.php" >Alunos</a></li>
-      <li><a href="turmas/index.php" >Turmas</a></li>
-      <li><a href="disciplinas/index.php">Disciplinas</a></li>
+      <li><a href="../index.php" class="active">Inicio</a></li>
+      <li><a href="alunos/index.html" >Alunos</a></li>
+      <li><a href="turmas/index.html" >Turmas</a></li>
+      <li><a href="disciplinas/index.html">Disciplinas</a></li>
       <li><a href="professores/index.html">Professores</a></li>
       <li><a href="matriculas/index.html">Matrículas</a></li>
      

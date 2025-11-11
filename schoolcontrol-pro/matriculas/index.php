@@ -33,6 +33,8 @@ try {
         $sql = "
             SELECT 
                 m.id_matricula,
+                m.id_aluno,
+                m.id_turma,
                 a.nome AS aluno,
                 t.nome AS turma,
                 m.data_matricula
@@ -41,6 +43,7 @@ try {
             JOIN turmas t ON t.id_turma = m.id_turma
             ORDER BY m.data_matricula DESC
         ";
+    
         $res = $conn->query($sql);
         $data = [];
         while ($row = $res->fetch_assoc()) $data[] = $row;
@@ -56,9 +59,30 @@ try {
             echo json_encode(['success' => false, 'error' => 'Dados inválidos']);
             exit;
         }
+    
+        // 🔹 Verifica se já existe matrícula igual
+      // 🔹 Verifica se o aluno já tem alguma matrícula
+      $id_matricula = $body['id_matricula'] ?? 0; // 0 se for criar
+      $stmtCheck = $conn->prepare("
+          SELECT COUNT(*) AS total 
+          FROM matriculas 
+          WHERE id_aluno = ? AND id_matricula <> ?
+      ");
+      $stmtCheck->bind_param("ii", $id_aluno, $id_matricula);
+      
+        $stmtCheck->execute();
+        $res = $stmtCheck->get_result()->fetch_assoc();
+    
+        if ($res['total'] > 0) {
+            echo json_encode(['success' => false, 'error' => 'Aluno já matriculado nesta turma!']);
+            exit;
+        }
+    
+        // 🔹 Cria nova matrícula
         $stmt = $conn->prepare("INSERT INTO matriculas (id_aluno, id_turma, data_matricula) VALUES (?, ?, NOW())");
         $stmt->bind_param("ii", $id_aluno, $id_turma);
         $ok = $stmt->execute();
+    
         if ($ok) echo json_encode(['success' => true, 'id_matricula' => $stmt->insert_id]);
         else echo json_encode(['success' => false, 'error' => $stmt->error]);
         exit;

@@ -129,30 +129,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (editId) {
-      // Atualiza matrícula existente
-      await fetchJSON(`${api}?action=update_matricula`, {
+    const resp = await fetchJSON(`${api}?action=update_matricula`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id_matricula: parseInt(editId),
-          id_aluno: parseInt(id_aluno),
-          id_turma: parseInt(id_turma)
+            id_matricula: parseInt(editId),
+            id_aluno: parseInt(id_aluno),
+            id_turma: parseInt(id_turma)
         })
-      });
-      alert("Matrícula atualizada com sucesso!");
-      delete form.dataset.editingId;
+    });
+    
+    if (resp.success) {
+        alert("Matrícula atualizada com sucesso!");
     } else {
-      // Cria nova matrícula
-      await fetchJSON(`${api}?action=create_matricula`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id_aluno: parseInt(id_aluno),
-          id_turma: parseInt(id_turma)
-        })
-      });
-      alert("Matrícula criada com sucesso!");
+        alert(resp.error || "Erro ao atualizar matrícula!");
     }
+
+    delete form.dataset.editingId;
+}
+
+      // Cria nova matrícula
+      // Cria nova matrícula
+// Cria nova matrícula
+const resp = await fetchJSON(`${api}?action=create_matricula`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+      id_aluno: parseInt(id_aluno),
+      id_turma: parseInt(id_turma)
+  })
+});
+
+if (resp.success) {
+  alert("Matrícula criada com sucesso!");
+} else {
+  // Mostra o erro retornado pelo PHP
+  alert(resp.error || "Erro ao criar matrícula!");
+}
+
+
 
     listarMatriculas();
     document.querySelector('#id_aluno_select').value = '';
