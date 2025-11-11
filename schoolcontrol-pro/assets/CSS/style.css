@@ -1,309 +1,257 @@
 /* ==============================
    CONFIGURAÇÃO GERAL
 ============================== */
+/* ==============================
+   CONFIGURAÇÃO GERAL
+============================== */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-body {
-  background-color: #f4f8ff;
-  color: #1a2a44;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-/* ==============================
-   CABEÇALHO
-============================== */
-header {
-  background: linear-gradient(135deg, #0057d9, #007bff);
-  color: #fff;
-  padding: 30px 20px;
-  text-align: center;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-  position: relative;
-}
-
-header h1 {
-  font-size: 2rem;
-  letter-spacing: 1px;
-  font-weight: 600;
-}
-
-/* Botão modo escuro */
-.theme-toggle {
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  background-color: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: #fff;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.3s ease;
-}
-
-.theme-toggle:hover {
-  background-color: rgba(255, 255, 255, 0.4);
-}
-
-/* ==============================
-   NAVEGAÇÃO
-============================== */
-nav {
-  background-color: #ffffff;
-  border-bottom: 2px solid #e0e6f0;
-  box-shadow: 0 2px 5px rgba(0, 87, 217, 0.1);
-  display: flex;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-nav ul {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-nav li {
-  margin: 10px;
-}
-
-nav a {
-  text-decoration: none;
-  color: #0057d9;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  display: inline-block;
-}
-
-nav a:hover {
-  background-color: #0057d9;
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 87, 217, 0.3);
-}
-
-nav a.active {
-  background-color: #007bff;
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
-}
-
-/* ==============================
-   CONTEÚDO PRINCIPAL
-============================== */
-main {
-  flex: 1;
-  padding: 40px 20px;
-  max-width: 900px;
-  margin: 0 auto;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  text-align: center;
-}
-
-main p {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #333;
-}
-
-/* ==============================
-   FORMULÁRIOS (páginas internas)
-============================== */
-h1, h2 {
-  color: #0057d9;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-form {
-  background: #fff;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
-  margin: 0 auto 30px auto;
-}
-
-label {
-  display: block;
-  margin-bottom: 15px;
-  font-weight: 500;
-}
-
-input[type="text"],
-input[type="email"] {
-  width: 100%;
-  padding: 10px 12px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-}
-
-input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-  outline: none;
-}
-
-button {
-  background: #007bff;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-}
-
-button:hover {
-  background: #0057d9;
-  transform: scale(1.03);
-}
-
-/* ==============================
-   TABELA DE DADOS
-============================== */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
-  overflow: hidden;
-  margin-top: 20px;
-}
-
-thead {
-  background: #007bff;
-  color: #fff;
-}
-
-th, td {
-  padding: 12px 15px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-tbody tr:hover {
-  background: #f0f8ff;
-}
-
-td button {
-  background: #007bff;
-  color: #fff;
-  border: none;
-  padding: 6px 12px;
-  margin-right: 5px;
-  border-radius: 5px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-td button:hover {
-  background: #0057d9;
-}
-
-td button:nth-child(2) {
-  background: #dc3545;
-}
-
-td button:nth-child(2):hover {
-  background: #a71d2a;
-}
-
-footer {
-  background-color: #0057d9;
-  color: #fff;
-  text-align: center;
-  padding: 15px 0;
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
-}
-
-/* ==============================
-   MODO ESCURO
-============================== */
-body.dark-mode {
-  background-color: #0d1117;
-  color: #e6edf3;
-}
-
-body.dark-mode header {
-  background: linear-gradient(135deg, #0d47a1, #003366);
-}
-
-body.dark-mode nav {
-  background-color: #161b22;
-  border-bottom: 2px solid #0d47a1;
-  box-shadow: none;
-}
-
-body.dark-mode nav a {
-  color: #4ea1ff;
-}
-
-body.dark-mode nav a.active,
-body.dark-mode nav a:hover {
-  background-color: #007bff;
-  color: #fff;
-}
-
-body.dark-mode main,
-body.dark-mode form,
-body.dark-mode table {
-  background-color: #161b22;
-  color: #e6edf3;
-  box-shadow: 0 0 10px rgba(0, 123, 255, 0.15);
-}
-
-body.dark-mode footer {
-  background-color: #003366;
-}
-
-/* ==============================
-   RESPONSIVIDADE
-============================== */
-@media (max-width: 768px) {
-  header h1 {
-    font-size: 1.5rem;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
-
-  nav ul {
+  
+  body {
+    background-color: #f4f8ff;
+    color: #1a2a44;
+    display: flex;
     flex-direction: column;
+    min-height: 100vh;
   }
-
-  nav li {
-    margin: 5px 0;
-  }
-
-  nav a {
-    display: block;
-    width: 90%;
+  
+  /* ==============================
+     CABEÇALHO (ajuste p/ <h1> direto no body)
+  ============================== */
+  h1 {
+    background: linear-gradient(135deg, #0057d9, #007bff);
+    color: #fff;
     text-align: center;
-    margin: 0 auto;
+    padding: 30px 20px;
+    font-size: 2rem;
+    letter-spacing: 1px;
+    font-weight: 600;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 0; /* tira espaçamento para colar no menu */
   }
-
-  main, form {
-    padding: 25px 15px;
+  
+  /* ==============================
+     NAVEGAÇÃO
+  ============================== */
+  nav {
+    background-color: #ffffff;
+    border-bottom: 2px solid #e0e6f0;
+    box-shadow: 0 2px 5px rgba(0, 87, 217, 0.1);
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
   }
+  
+  nav ul {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 10px 0;
+  }
+  
+  nav li {
+    margin: 10px;
+  }
+  
+  nav a {
+    text-decoration: none;
+    color: #0057d9;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+  
+  nav a:hover {
+    background-color: #0057d9;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 87, 217, 0.3);
+  }
+  
+  nav a.active {
+    background-color: #007bff;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+  }
+  
+  /* ==============================
+     CONTEÚDO PRINCIPAL (para páginas sem <main>)
+  ============================== */
+  body > form,
+  body > table,
+  body > h2 {
+    max-width: 900px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+  }
+  
+  body > h2 {
+    background: none;
+    box-shadow: none;
+    margin-top: 40px;
+    text-align: center;
+    color: #0057d9;
+  }
+  
+  /* ==============================
+     FORMULÁRIOS
+  ============================== */
+  form {
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto 30px auto;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: 500;
+  }
+  
+  select,
+  input[type="text"],
+  input[type="email"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+  }
+  
+  input:focus,
+  select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+  }
+  
+  button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    margin-top: 15px; /* 🔹 espaço acima do botão */
 }
+
+  
+  button:hover {
+    background: #0057d9;
+    transform: scale(1.03);
+  }
+  
+  /* ==============================
+     TABELA DE DADOS
+  ============================== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+  
+  thead {
+    background: #007bff;
+    color: #fff;
+  }
+  
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  tbody tr:hover {
+    background: #f0f8ff;
+  }
+  
+  td button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    margin-right: 5px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  td button:hover {
+    background: #0057d9;
+  }
+  
+  td button:nth-child(2) {
+    background: #dc3545;
+  }
+  
+  td button:nth-child(2):hover {
+    background: #a71d2a;
+  }
+  
+  /* ==============================
+     RODAPÉ
+  ============================== */
+  footer {
+    background-color: #0057d9;
+    color: #fff;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    margin-top: auto;
+  }
+  
+  /* ==============================
+     RESPONSIVIDADE
+  ============================== */
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 1.5rem;
+      padding: 20px 10px;
+    }
+  
+    nav ul {
+      flex-direction: column;
+    }
+  
+    nav li {
+      margin: 5px 0;
+    }
+  
+    nav a {
+      display: block;
+      width: 90%;
+      text-align: center;
+      margin: 0 auto;
+    }
+  
+    form, table {
+      padding: 25px 15px;
+    }
+  }
+  

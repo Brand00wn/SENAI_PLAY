@@ -1,69 +1,34 @@
 <?php
 include '../config/conexao.php';
-
 $sql = "
 SELECT 
-    m.id_matricula AS matricula_id,
+    m.id_matricula,
     a.nome AS aluno,
     t.nome AS turma,
     m.data_matricula
 FROM matriculas m
 JOIN alunos a ON a.id_aluno = m.id_aluno
 JOIN turmas t ON t.id_turma = m.id_turma
-ORDER BY a.nome, t.nome
+ORDER BY m.data_matricula DESC
 ";
-
-$result = $conn->query($sql);
+$res = $conn->query($sql);
 ?>
-
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Listagem de Matrículas</title>
-    <link rel="stylesheet" href="../assets/CSS/style.css">
-</head>
-<body>
-    <h1>Listagem de Matrículas</h1>
-
-    <div class="filtros">
-        <input type="text" id="busca" placeholder="Buscar por aluno ou turma...">
-        <select id="filtroTurma">
-            <option value="">Filtrar por turma</option>
-            <?php
-            $turmas = $conn->query("SELECT DISTINCT nome FROM turmas ORDER BY nome");
-            while ($t = $turmas->fetch_assoc()) {
-                echo "<option value='{$t['nome']}'>{$t['nome']}</option>";
-            }
-            ?>
-        </select>
-    </div>
-
-    <table id="tabelaMatriculas">
-        <thead>
-            <tr>
-                <th>ID Matrícula</th>
-                <th>Aluno</th>
-                <th>Turma</th>
-                <th>Data da Matrícula</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if ($result && $result->num_rows > 0): ?>
-                <?php while ($row = $result->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= $row['matricula_id'] ?></td>
-                        <td><?= htmlspecialchars($row['aluno']) ?></td>
-                        <td><?= htmlspecialchars($row['turma']) ?></td>
-                        <td><?= date("d/m/Y", strtotime($row['data_matricula'])) ?></td>
-                    </tr>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <tr><td colspan="4">Nenhuma matrícula encontrada.</td></tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-
-    <script src="../assets/JS/script.js"></script>
-</body>
-</html>
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Listar Matrículas</title></head><body>
+<h1>Listar Matrículas</h1>
+<table border="1">
+<thead><tr><th>ID</th><th>Aluno</th><th>Turma</th><th>Data</th></tr></thead>
+<tbody>
+<?php if ($res && $res->num_rows): while($row = $res->fetch_assoc()): ?>
+<tr>
+<td><?= htmlspecialchars($row['id_matricula']) ?></td>
+<td><?= htmlspecialchars($row['aluno']) ?></td>
+<td><?= htmlspecialchars($row['turma']) ?></td>
+<td><?= htmlspecialchars($row['data_matricula']) ?></td>
+</tr>
+<?php endwhile; else: ?>
+<tr><td colspan="4">Nenhuma matrícula encontrada.</td></tr>
+<?php endif; ?>
+</tbody>
+</table>
+</body></html>
