@@ -254,4 +254,18 @@
       padding: 25px 15px;
     }
   }
+
+  .texto {
+    max-width: 900px;       /* Limita a largura para melhor leitura */
+    margin: 30px auto;      /* Espaçamento em cima e em baixo, centralizado horizontalmente */
+    padding: 20px;          /* Espaço interno para “respirar” */
+    background-color: #ffffff;  /* Fundo branco para contraste */
+    color: #333333;         /* Cor do texto mais suave para leitura */
+    font-size: 1.1rem;      /* Tamanho de fonte confortável */
+    line-height: 1.6;       /* Espaçamento entre linhas para facilitar a leitura */
+    border-radius: 10px;    /* Bordas arredondadas para suavidade */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);  /* Sombra leve para destaque */
+    text-align: justify;    /* Justifica o texto para visual mais alinhado */
+  }
+  
   

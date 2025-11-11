@@ -22,7 +22,7 @@
   </nav>
 
   <main>
-    <p>O SENAI Play é mais do que um simples projeto — é o resultado de um trabalho coletivo que uniu criatividade, conhecimento técnico e colaboração entre colegas que compartilharam o mesmo propósito: construir algo único e funcional a partir de diferentes talentos.
+    <p class = "texto" >O SENAI Play é mais do que um simples projeto — é o resultado de um trabalho coletivo que uniu criatividade, conhecimento técnico e colaboração entre colegas que compartilharam o mesmo propósito: construir algo único e funcional a partir de diferentes talentos.
 
 Desenvolvido como um projeto colaborativo, cada integrante do grupo ficou responsável por uma parte específica do sistema, cuidando de detalhes que vão desde o design e a estrutura visual até a lógica de programação e a integração entre as páginas. Essa divisão permitiu que cada participante colocasse em prática suas habilidades e sua visão pessoal, formando um conjunto harmônico que reflete a essência do trabalho em equipe.
 
