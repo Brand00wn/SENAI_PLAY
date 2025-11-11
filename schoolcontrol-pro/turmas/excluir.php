@@ -1,28 +1,54 @@
 <?php
 header("Content-Type: application/json; charset=utf-8");
-require_once "../../config/conexao.php";
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: DELETE, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-if (!isset($_GET["id_turma"])) {
-    echo json_encode(["mensagem" => "ID da turma não informado."]);
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
     exit;
 }
 
-$id_turma = $_GET["id_turma"];
+require_once('../config/conexao.php'); // deve criar $conn = new mysqli(...);
+
+$dados = json_decode(file_get_contents('php://input'), true);
+if (!$dados) {
+    // fallback se veio via POST tradicional
+    $dados = $_POST ?? [];
+}
+
+$id = isset($dados['id_turma']) ? (int)$dados['id_turma'] : 0;
+
+// também permite id na URL (?id_turma=)
+if ($id <= 0 && isset($_GET['id_turma'])) {
+    $id = (int)$_GET['id_turma'];
+}
+
+if ($id <= 0) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'mensagem' => 'ID inválido.']);
+    exit;
+}
 
 try {
-    // Verifica se há matrículas associadas
-    $check = $conn->prepare("SELECT COUNT(*) FROM matriculas WHERE id_turma = ?");
-    $check->execute([$id_turma]);
-    if ($check->fetchColumn() > 0) {
-        echo json_encode(["mensagem" => "Não é possível excluir: há matrículas associadas a esta turma."]);
-        exit;
+    $stmt = $conn->prepare("DELETE FROM turmas WHERE id_turma = ?");
+    if (!$stmt) {
+        throw new Exception("Erro ao preparar statement: " . $conn->error);
     }
 
-    $sql = "DELETE FROM turmas WHERE id_turma = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$id_turma]);
+    // 'i' = inteiro
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
 
-    echo json_encode(["mensagem" => "Turma excluída com sucesso!"]);
-} catch (PDOException $e) {
-    echo json_encode(["mensagem" => "Erro ao excluir turma: " . $e->getMessage()]);
+    if ($stmt->affected_rows > 0) {
+        echo json_encode(['success' => true, 'mensagem' => 'Turma excluída com sucesso.']);
+    } else {
+        echo json_encode(['success' => false, 'mensagem' => 'Nenhuma turma encontrada com esse ID.']);
+    }
+
+    $stmt->close();
+    $conn->close();
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'mensagem' => 'Erro ao excluir turma.', 'erro' => $e->getMessage()]);
 }

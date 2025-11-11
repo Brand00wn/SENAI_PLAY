@@ -1,33 +1,58 @@
 <?php
 header("Content-Type: application/json; charset=utf-8");
-require_once "../../config/conexao.php";
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: PUT, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-$dados = json_decode(file_get_contents("php://input"), true);
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
 
-if (!$dados || empty($dados["id_turma"]) || empty($dados["nome"]) || empty($dados["ano"])) {
-    echo json_encode(["mensagem" => "Dados inválidos."]);
+require_once('../config/conexao.php'); // deve criar $conn = new mysqli(...)
+
+$dados = json_decode(file_get_contents('php://input'), true);
+
+if (!$dados) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'mensagem' => 'JSON inválido.']);
+    exit;
+}
+
+$id    = isset($dados['id_turma']) ? (int)$dados['id_turma'] : 0;
+$nome  = isset($dados['nome']) ? trim($dados['nome']) : null;
+$ano   = isset($dados['ano']) ? (int)$dados['ano'] : null;
+$turno = isset($dados['turno']) ? trim($dados['turno']) : null;
+
+if ($id <= 0 || $nome === null || $ano === null) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'mensagem' => 'ID, nome e ano são obrigatórios.']);
     exit;
 }
 
 try {
-    // Evita duplicar nome + ano em outra turma
-    $verifica = $conn->prepare("SELECT COUNT(*) FROM turmas WHERE nome = ? AND ano = ? AND id_turma != ?");
-    $verifica->execute([$dados["nome"], $dados["ano"], $dados["id_turma"]]);
-    if ($verifica->fetchColumn() > 0) {
-        echo json_encode(["mensagem" => "Já existe outra turma com esse nome e ano."]);
-        exit;
+    $stmt = $conn->prepare("UPDATE turmas SET nome = ?, ano = ?, turno = ? WHERE id_turma = ?");
+    if (!$stmt) {
+        throw new Exception("Erro ao preparar statement: " . $conn->error);
     }
 
-    $sql = "UPDATE turmas SET nome = ?, ano = ?, turno = ? WHERE id_turma = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([
-        $dados["nome"],
-        $dados["ano"],
-        $dados["turno"] ?? null,
-        $dados["id_turma"]
-    ]);
+    // Tipos: s = string, i = inteiro, s = string, i = inteiro
+    $stmt->bind_param("sisi", $nome, $ano, $turno, $id);
+    $stmt->execute();
 
-    echo json_encode(["mensagem" => "Turma atualizada com sucesso!"]);
-} catch (PDOException $e) {
-    echo json_encode(["mensagem" => "Erro ao atualizar turma: " . $e->getMessage()]);
+    if ($stmt->affected_rows > 0) {
+        echo json_encode(['success' => true, 'mensagem' => 'Turma atualizada com sucesso.']);
+    } else {
+        echo json_encode(['success' => false, 'mensagem' => 'Nenhuma alteração realizada ou turma não encontrada.']);
+    }
+
+    $stmt->close();
+    $conn->close();
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'mensagem' => 'Erro ao atualizar turma.',
+        'erro' => $e->getMessage()
+    ]);
 }
