@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Matrículas</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Cadastro de Matricula</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
 </head>
 <body>
-    <h1>Matrículas</h1>
+  <h1>Cadastro de Matricula</h1>
 
-    <form id="formMatricula">
+  <form id="formprof">
         <label>Aluno:</label>
         <select id="id_aluno_select"></select>
 
@@ -18,19 +18,19 @@
         <button type="submit">Matricular</button>
     </form>
 
-    <h2>Lista de Matrículas</h2>
-    <table id="tabelaMatriculas">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Aluno</th>
-                <th>Turma</th>
-                <th>Data</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+  <h2>Lista de Matriculas</h2>
+  <table id="list_matriculas">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Aluno</th>
+        <th>Turma</th>
+        <th>Data de Matricula</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
     <script src="matriculas.js"></script>
 </body>
