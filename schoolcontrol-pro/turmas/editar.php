@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-require_once('../config/conexao.php'); // precisa criar $conn = new mysqli(...)
+require_once('../config/conexao.php'); 
 
 $dados = json_decode(file_get_contents('php://input'), true);
 

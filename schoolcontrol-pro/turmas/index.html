@@ -3,34 +3,54 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Gerenciar Turmas</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>🏫 Gerenciamento de Turmas</title>
+  <link rel="stylesheet" href="../assets/CSS/style.css" />
 </head>
+
 <body>
   <main class="container">
-    <h1>🏫 Gerenciamento de Turmas</h1>
+    <header>
+      <h1>🏫 Sistema Acadêmico - Turmas</h1>
+    </header>
 
+    <nav>
+      <ul>
+        <li><a href="../index.php">Início</a></li>
+        <li><a href="../alunos/index.php">Alunos</a></li>
+        <li><a href="index.html" class="active">Turmas</a></li>
+        <li><a href="../disciplinas/index.php">Disciplinas</a></li>
+        <li><a href="../professores/index.php">Professores</a></li>
+        <li><a href="../matriculas/index.php">Matrículas</a></li>
+      </ul>
+    </nav>
+
+    <!-- Seção do formulário -->
     <section id="form-section">
       <h2>Cadastrar / Editar Turma</h2>
+
       <form id="turmaForm">
         <input type="hidden" id="id_turma" />
+
         <div>
-          <label>Nome</label>
-          <input id="nome" required />
+          <label for="nome">Nome da Turma:</label>
+          <input id="nome" name="nome" required />
         </div>
+
         <div>
-          <label>Ano</label>
-          <input id="ano" type="number" required min="2000" max="2100" />
+          <label for="ano">Ano:</label>
+          <input id="ano" name="ano" type="number" required min="2000" max="2100" />
         </div>
+
         <div>
-          <label for="turno">Turno</label>
-          <select id="turno" required>
+          <label for="turno">Turno:</label>
+          <select id="turno" name="turno" required>
             <option value="">Selecione...</option>
             <option value="Manhã">Manhã</option>
             <option value="Tarde">Tarde</option>
             <option value="Noite">Noite</option>
           </select>
         </div>
+
         <div class="actions">
           <button type="submit">Salvar</button>
           <button type="button" id="btnReset">Limpar</button>
@@ -38,13 +58,22 @@
       </form>
     </section>
 
+    <!-- Seção da tabela -->
     <section id="list-section">
       <h2>Lista de Turmas</h2>
       <table id="turmasTable">
         <thead>
-          <tr><th>ID</th><th>Nome</th><th>Ano</th><th>Turno</th><th>Ações</th></tr>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Ano</th>
+            <th>Turno</th>
+            <th>Ações</th>
+          </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          <!-- Linhas geradas dinamicamente pelo turmas.js -->
+        </tbody>
       </table>
     </section>
   </main>
