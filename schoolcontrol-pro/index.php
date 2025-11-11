@@ -12,7 +12,7 @@
   <nav>
     <ul>
       <li><a href="index.php" class="active">Inicio</a></li>
-      <li><a href="alunos/index.php" >Alunos</a></li>
+      <li><a href="alunos/index.html" >Alunos</a></li>
       <li><a href="turmas/index.php" >Turmas</a></li>
       <li><a href="disciplinas/index.php">Disciplinas</a></li>
       <li><a href="professores/index.php">Professores</a></li>
@@ -24,6 +24,9 @@
   <main>
     <p>(Texto de apresentação do projeto)</p>
   </main>
+  <footer>
+  <p>© 2025 School Contro Pro — Todos os direitos reservados</p>
+</footer>
 
   <script src="assets/JS/script.js" defer></script>
 </body>
