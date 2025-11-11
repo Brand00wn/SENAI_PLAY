@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-require_once('../config/conexao.php'); // deve criar $conn = new mysqli(...)
+require_once('../config/conexao.php'); // precisa criar $conn = new mysqli(...)
 
 $dados = json_decode(file_get_contents('php://input'), true);
 
@@ -24,7 +24,7 @@ $nome  = isset($dados['nome']) ? trim($dados['nome']) : null;
 $ano   = isset($dados['ano']) ? (int)$dados['ano'] : null;
 $turno = isset($dados['turno']) ? trim($dados['turno']) : null;
 
-if ($id <= 0 || $nome === null || $ano === null) {
+if ($id <= 0 || empty($nome) || empty($ano)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'mensagem' => 'ID, nome e ano são obrigatórios.']);
     exit;
@@ -36,7 +36,6 @@ try {
         throw new Exception("Erro ao preparar statement: " . $conn->error);
     }
 
-    // Tipos: s = string, i = inteiro, s = string, i = inteiro
     $stmt->bind_param("sisi", $nome, $ano, $turno, $id);
     $stmt->execute();
 

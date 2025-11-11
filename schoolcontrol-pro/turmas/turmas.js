@@ -1,7 +1,5 @@
 // turmas.js
 
-
-
 document.addEventListener("DOMContentLoaded", () => {
   carregarTurmas();
 
@@ -11,40 +9,50 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    const id = document.getElementById("id_turma").value;
     const payload = {
+      id_turma: id ? parseInt(id, 10) : null,
       nome: document.getElementById("nome").value.trim(),
       ano: parseInt(document.getElementById("ano").value, 10),
       turno: document.getElementById("turno").value
     };
 
-    const id = document.getElementById("id_turma").value;
-
-    const url = id
-      ? `editar.php?id_turma=${id}`
-      : `cadastrar.php`;
+    // Decide qual script PHP chamar
+    const url = id ? "editar.php" : "cadastrar.php";
 
     try {
       const resp = await fetch(url, {
-        method: "POST",
+        method: id ? "PUT" : "POST", // PUT para editar, POST para cadastrar
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
 
       const data = await resp.json();
+
       alert(data.mensagem || "Operação realizada.");
+
+      // 🔹 Limpa o formulário e o campo oculto de ID
       form.reset();
+      document.getElementById("id_turma").value = "";
+
+      // 🔹 Recarrega a lista de turmas
       carregarTurmas();
     } catch (err) {
       alert("Erro ao salvar turma: " + err.message);
     }
   });
 
-  btnReset.addEventListener("click", () => form.reset());
+  // 🔹 Botão "Limpar" também zera o campo oculto de ID
+  btnReset.addEventListener("click", () => {
+    form.reset();
+    document.getElementById("id_turma").value = "";
+  });
 });
 
+// 🔹 Função para carregar todas as turmas
 async function carregarTurmas() {
   try {
-    const resp = await fetch(`listar.php`);
+    const resp = await fetch("listar.php");
     const data = await resp.json();
 
     if (!data.success) {
@@ -55,7 +63,7 @@ async function carregarTurmas() {
     const tbody = document.querySelector("#turmasTable tbody");
     tbody.innerHTML = "";
 
-    if (data.turmas.length === 0) {
+    if (!data.turmas || data.turmas.length === 0) {
       const tr = document.createElement("tr");
       tr.innerHTML = `<td colspan="5">Nenhuma turma cadastrada.</td>`;
       tbody.appendChild(tr);
@@ -70,8 +78,8 @@ async function carregarTurmas() {
         <td>${t.ano}</td>
         <td>${t.turno}</td>
         <td>
-          <button onclick="editarTurma(${t.id_turma}, '${t.nome}', ${t.ano}, '${t.turno}')">Editar</button>
-          <button onclick="excluirTurma(${t.id_turma})">Excluir</button>
+          <button class="btn btn-success btn-sm" onclick="editarTurma(${t.id_turma}, '${t.nome}', ${t.ano}, '${t.turno}')">Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="excluirTurma(${t.id_turma})">Excluir</button>
         </td>
       `;
       tbody.appendChild(tr);
@@ -82,6 +90,7 @@ async function carregarTurmas() {
   }
 }
 
+// 🔹 Função para excluir uma turma
 async function excluirTurma(id) {
   if (!confirm("Deseja realmente excluir esta turma?")) return;
 
@@ -97,10 +106,13 @@ async function excluirTurma(id) {
   }
 }
 
+// 🔹 Função para preencher o formulário ao clicar em "Editar"
 function editarTurma(id, nome, ano, turno) {
   document.getElementById("id_turma").value = id;
   document.getElementById("nome").value = nome;
   document.getElementById("ano").value = ano;
   document.getElementById("turno").value = turno;
+
+  // Rola a tela até o formulário
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
