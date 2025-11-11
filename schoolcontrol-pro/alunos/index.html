@@ -1,146 +1,66 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>CRUD de Alunos</title>
-    <link rel="stylesheet" href="../assets/CSS/style.css" />
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="../assets/CSS/style.css">
+  <title>Cadastro de Alunos</title>
+  <style>
+    /* Estilos básicos para melhor visualização */
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    form div { margin-bottom: 10px; }
+    label { display: inline-block; width: 150px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    .btn-editar, .btn-excluir { padding: 5px 10px; cursor: pointer; }
+    .btn-editar { background-color: #4CAF50; color: white; border: none; }
+    .btn-excluir { background-color: #f44336; color: white; border: none; margin-left: 5px; }
+  </style>
 </head>
 <body>
-    <h1>CRUD de Alunos</h1>
+  <h1>Cadastro de Alunos</h1>
 
-    <h2>Formulário de Aluno</h2>
-    <form id="formAluno">
-        <input type="hidden" id="id" name="id">
-        <label>Nome:</label><br>
-        <input type="text" id="nome" name="nome" required><br><br>
+  <form id="formAluno">
+    <!-- Campo oculto para o ID (usado na edição) - O JS original usa o ID, mas vamos manter o controle no JS para evitar problemas de segurança -->
+    <input type="hidden" id="id" name="id">
 
-        <label>Email:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
+    <div>
+      <label for="nome">Nome:</label>
+      <input type="text" id="nome" name="nome" required>
+    </div>
 
-        <label>Data de Nascimento:</label><br>
-        <input type="date" id="data_nascimento" name="data_nascimento" required><br><br>
+    <div>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+    </div>
 
-        <button type="submit" id="btnSalvar">Cadastrar</button>
-        <button type="button" id="btnCancelar" style="display:none;">Cancelar</button>
-    </form>
+    <div>
+      <label for="data_nascimento">Data de Nascimento:</label>
+      <input type="date" id="data_nascimento" name="data_nascimento" required>
+    </div>
 
-    <hr>
+    <div>
+      <button type="submit" id="btnSalvar">Cadastrar</button>
+      <button type="button" id="btnCancelar" style="display:none;">Cancelar</button>
+    </div>
+  </form>
 
-    <h2>Lista de Alunos</h2>
-    <table border="1" cellpadding="5" cellspacing="0" id="tabelaAlunos">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Data de Nascimento</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+  <h2>Lista de Alunos</h2>
+  <table id="tabelaAlunos">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Data de Nascimento</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Os alunos serão inseridos aqui pelo JS -->
+    </tbody>
+  </table>
 
-    <script>
-        const apiUrl = "api.php"; // caminho da sua API
-        const tabela = document.querySelector("#tabelaAlunos tbody");
-        const form = document.getElementById("formAluno");
-        const btnSalvar = document.getElementById("btnSalvar");
-        const btnCancelar = document.getElementById("btnCancelar");
-
-        let editando = false;
-
-        // ===== Listar alunos =====
-        function listarAlunos() {
-            fetch(`${apiUrl}?acao=listar`)
-                .then(res => res.json())
-                .then(data => {
-                    tabela.innerHTML = "";
-                    data.forEach(aluno => {
-                        const tr = document.createElement("tr");
-                        tr.innerHTML = `
-                            <td>${aluno.id}</td>
-                            <td>${aluno.nome}</td>
-                            <td>${aluno.email}</td>
-                            <td>${new Date(aluno.data_nascimento).toLocaleDateString('pt-BR')}</td>
-                            <td>
-                                <button onclick="editarAluno(${aluno.id})">Editar</button>
-                                <button onclick="excluirAluno(${aluno.id})">Excluir</button>
-                            </td>
-                        `;
-                        tabela.appendChild(tr);
-                    });
-                });
-        }
-
-        // ===== Cadastrar / Editar =====
-        form.addEventListener("submit", function(e) {
-            e.preventDefault();
-            const formData = new FormData(form);
-            const acao = editando ? 'editar' : 'cadastrar';
-
-            fetch(`${apiUrl}?acao=${acao}`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(res => res.json())
-            .then(res => {
-                if (res.error) {
-                    alert(res.error);
-                } else {
-                    alert(editando ? "Aluno atualizado!" : "Aluno cadastrado!");
-                    form.reset();
-                    editando = false;
-                    btnSalvar.textContent = "Cadastrar";
-                    btnCancelar.style.display = "none";
-                    listarAlunos();
-                }
-            });
-        });
-
-        // ===== Editar aluno =====
-        function editarAluno(id) {
-            fetch(`${apiUrl}?acao=listar`)
-                .then(res => res.json())
-                .then(data => {
-                    const aluno = data.find(a => a.id == id);
-                    if (!aluno) return alert("Aluno não encontrado");
-
-                    document.getElementById("id").value = aluno.id;
-                    document.getElementById("nome").value = aluno.nome;
-                    document.getElementById("email").value = aluno.email;
-                    document.getElementById("data_nascimento").value = aluno.data_nascimento;
-
-                    editando = true;
-                    btnSalvar.textContent = "Salvar Alterações";
-                    btnCancelar.style.display = "inline";
-                });
-        }
-
-        // ===== Cancelar edição =====
-        btnCancelar.addEventListener("click", () => {
-            form.reset();
-            editando = false;
-            btnSalvar.textContent = "Cadastrar";
-            btnCancelar.style.display = "none";
-        });
-
-        // ===== Excluir aluno =====
-        function excluirAluno(id) {
-            if (!confirm("Deseja realmente excluir este aluno?")) return;
-            fetch(`${apiUrl}?acao=excluir&id=${id}`)
-                .then(res => res.json())
-                .then(res => {
-                    if (res.error) {
-                        alert(res.error);
-                    } else {
-                        alert("Aluno excluído!");
-                        listarAlunos();
-                    }
-                });
-        }
-
-        // ===== Inicializar =====
-        listarAlunos();
-    </script>
+  <script src="index.js"></script>
 </body>
 </html>
