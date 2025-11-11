@@ -1,98 +1,106 @@
 <?php
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-// Tratamento para requisição OPTIONS (pré-flight do CORS)
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
+// ==== CONFIGURAÇÃO DO BANCO DE DADOS ====
+$host = "localhost";
+$dbname = "crud_alunos";  // nome do banco de dados
+$user = "root";           // seu usuário MySQL
+$pass = "";               // senha do seu MySQL (ex: 'root' no XAMPP)
+
+// ==== CONEXÃO COM O BANCO ====
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (Exception $e) {
+    echo json_encode(["error" => "Erro ao conectar ao banco: " . $e->getMessage()]);
     exit;
 }
 
-// Importa a conexão
-require_once("../config/conexao.php");
+// ==== PEGA A AÇÃO DA REQUISIÇÃO ====
+$acao = $_GET['acao'] ?? '';
 
-$metodo = $_SERVER['REQUEST_METHOD'];
-$input = json_decode(file_get_contents("php://input"), true);
+switch ($acao) {
+    // ============================================================
+    // LISTAR ALUNOS
+    // ============================================================
+    case 'listar':
+        try {
+            $stmt = $pdo->query("SELECT * FROM alunos ORDER BY id DESC");
+            $alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode($alunos);
+        } catch (Exception $e) {
+            echo json_encode(["error" => "Erro ao listar: " . $e->getMessage()]);
+        }
+        break;
 
-// =====================
-// MÉTODO GET - Listar todos os alunos
-// =====================
-if ($metodo === 'GET') {
-    $sql = "SELECT * FROM alunos";
-    $res = $conn->query($sql);
+    // ============================================================
+    // CADASTRAR ALUNO
+    // ============================================================
+    case 'cadastrar':
+        $nome = $_POST['nome'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $data_nascimento = $_POST['data_nascimento'] ?? '';
 
-    $alunos = [];
-    while ($linha = $res->fetch_assoc()) {
-        $alunos[] = $linha;
-    }
+        if (!$nome || !$email || !$data_nascimento) {
+            echo json_encode(["error" => "Todos os campos são obrigatórios."]);
+            exit;
+        }
 
-    echo json_encode($alunos);
-    exit;
+        try {
+            $stmt = $pdo->prepare("INSERT INTO alunos (nome, email, data_nascimento) VALUES (?, ?, ?)");
+            $stmt->execute([$nome, $email, $data_nascimento]);
+            echo json_encode(["success" => true]);
+        } catch (Exception $e) {
+            echo json_encode(["error" => "Erro ao cadastrar: " . $e->getMessage()]);
+        }
+        break;
+
+    // ============================================================
+    // EDITAR ALUNO
+    // ============================================================
+    case 'editar':
+        $id = $_POST['id'] ?? '';
+        $nome = $_POST['nome'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $data_nascimento = $_POST['data_nascimento'] ?? '';
+
+        if (!$id || !$nome || !$email || !$data_nascimento) {
+            echo json_encode(["error" => "Todos os campos são obrigatórios."]);
+            exit;
+        }
+
+        try {
+            $stmt = $pdo->prepare("UPDATE alunos SET nome=?, email=?, data_nascimento=? WHERE id=?");
+            $stmt->execute([$nome, $email, $data_nascimento, $id]);
+            echo json_encode(["success" => true]);
+        } catch (Exception $e) {
+            echo json_encode(["error" => "Erro ao editar: " . $e->getMessage()]);
+        }
+        break;
+
+    // ============================================================
+    // EXCLUIR ALUNO
+    // ============================================================
+    case 'excluir':
+        $id = $_GET['id'] ?? '';
+        if (!$id) {
+            echo json_encode(["error" => "ID não informado."]);
+            exit;
+        }
+
+        try {
+            $stmt = $pdo->prepare("DELETE FROM alunos WHERE id=?");
+            $stmt->execute([$id]);
+            echo json_encode(["success" => true]);
+        } catch (Exception $e) {
+            echo json_encode(["error" => "Erro ao excluir: " . $e->getMessage()]);
+        }
+        break;
+
+    // ============================================================
+    // AÇÃO INVÁLIDA
+    // ============================================================
+    default:
+        echo json_encode(["error" => "Ação inválida."]);
+        break;
 }
-
-// =====================
-// MÉTODO POST - Criar novo aluno
-// =====================
-if ($metodo === 'POST') {
-    $nome = $input['nome'] ?? '';
-    $email = $input['email'] ?? '';
-
-    $stmt = $conexao->prepare("INSERT INTO aluno (nome, email) VALUES (?, ?)");
-    $stmt->bind_param("ss", $nome, $email);
-
-    if ($stmt->execute()) {
-        echo json_encode(["id" => $stmt->insert_id, "mensagem" => "Aluno criado com sucesso"]);
-    } else {
-        http_response_code(400);
-        echo json_encode(["erro" => "Falha ao criar aluno"]);
-    }
-    exit;
-}
-
-// =====================
-// MÉTODO PUT - Atualizar aluno existente
-// =====================
-if ($metodo === 'PUT') {
-    $id = $input['id'] ?? 0;
-    $nome = $input['nome'] ?? '';
-    $email = $input['email'] ?? '';
-
-    $stmt = $conexao->prepare("UPDATE aluno SET nome = ?, email = ? WHERE id = ?");
-    $stmt->bind_param("ssi", $nome, $email, $id);
-
-    if ($stmt->execute()) {
-        echo json_encode(["mensagem" => "Aluno atualizado com sucesso"]);
-    } else {
-        http_response_code(400);
-        echo json_encode(["erro" => "Falha ao atualizar alunos"]);
-    }
-    exit;
-}
-
-// =====================
-// MÉTODO DELETE - Excluir aluno
-// =====================
-if ($metodo === 'DELETE') {
-    $id = $input['id'] ?? 0;
-
-    $stmt = $conexao->prepare("DELETE FROM aluno WHERE id = ?");
-    $stmt->bind_param("i", $id);
-
-    if ($stmt->execute()) {
-        echo json_encode(["mensagem" => "Aluno deletado com sucesso"]);
-    } else {
-        http_response_code(400);
-        echo json_encode(["erro" => "Falha ao deletar aluno"]);
-    }
-    exit;
-}
-
-// =====================
-// Caso método não seja suportado
-// =====================
-http_response_code(405);
-echo json_encode(["erro" => "Método não permitido"]);
-exit;
-?>
