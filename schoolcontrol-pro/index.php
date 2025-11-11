@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>School Contro Pro</title>
-  <link rel="stylesheet" href="assets/CSS/style.css" />
+  <link rel="stylesheet" href="../assets/CSS/style.css" />
 </head>
 <body>
     <header>
@@ -32,6 +32,9 @@ O SchoOl CONTROL nasceu da união entre técnica e criatividade, com o objetivo 
 
 Este projeto é uma prova de que, quando há comprometimento, colaboração e paixão pelo que se faz, é possível transformar diferentes visões em um resultado único, coerente e inspirador.</p>
   </main>
+  <footer>
+  <p>© 2025 School Contro Pro — Todos os direitos reservados</p>
+</footer>
 
   <script src="assets/JS/script.js" defer></script>
 </body>
