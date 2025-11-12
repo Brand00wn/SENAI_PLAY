@@ -1,77 +1,124 @@
 <?php
-require_once "config/conexao.php";
-?>
+// API adapted for Matriculas (from professor module)
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Gestão de Eventos</title>
-    <link rel="stylesheet" href="assets/CSS/style.css">
-</head>
-<body>
+require_once __DIR__ . '/../config/conexao.php';
 
-<div>
-    <header>
-        <h1>Sistema de Cadastro Acadêmico</h1>
-    </header>
+$action = $_GET['action'] ?? '';
+$method = $_SERVER['REQUEST_METHOD'];
 
-    <nav>
-        <ul>
-        <li><a href="index.php" >Inicio</a></li>
-        <li><a href="alunos/index.php" >Alunos</a></li>
-        <li><a href="turmas/index.php" >Turmas</a></li>
-        <li><a href="disciplinas/index.php">Disciplinas</a></li>
-        <li><a href="professores/index.php">Professores</a></li>
-        <li><a href="matriculas/index.php" class="active">Matrículas</a></li>
-        
-        </ul>
-    </nav>
-  
-    <div>
-        <h2>Matricula</h2>
-        <form action="listar.php" method="post">
-            <label>Aluno:</label>
-            <input type="text" name="nome" required>
+try {
+    if ($action === 'list_alunos') {
+        $sql = "SELECT id_aluno, nome FROM alunos ORDER BY nome";
+        $res = $conn->query($sql);
+        $data = [];
+        while ($row = $res->fetch_assoc()) $data[] = $row;
+        echo json_encode(['success' => true, 'data' => $data]);
+        exit;
+    }
 
-            <label>Turma:</label>
-            <input type="text" name="tipo" required>
+    if ($action === 'list_turmas') {
+        $sql = "SELECT id_turma, nome FROM turmas ORDER BY nome";
+        $res = $conn->query($sql);
+        $data = [];
+        while ($row = $res->fetch_assoc()) $data[] = $row;
+        echo json_encode(['success' => true, 'data' => $data]);
+        exit;
+    }
 
-            <label></label>
-            <input type="date" name="data" required>
+    if ($action === 'list_matriculas') {
+        $sql = "
+            SELECT 
+                m.id_matricula,
+                m.id_aluno,
+                m.id_turma,
+                a.nome AS aluno,
+                t.nome AS turma,
+                m.data_matricula
+            FROM matriculas m
+            JOIN alunos a ON a.id_aluno = m.id_aluno
+            JOIN turmas t ON t.id_turma = m.id_turma
+            ORDER BY m.data_matricula DESC
+        ";
+    
+        $res = $conn->query($sql);
+        $data = [];
+        while ($row = $res->fetch_assoc()) $data[] = $row;
+        echo json_encode(['success' => true, 'data' => $data]);
+        exit;
+    }
 
-            <input type="submit" value="Cadastrar">
-        </form> 
-    </div>
-
-    <div >
-        <h2>Lista de Eventos</h2>
-
-        <?php
-        $sql = "SELECT * FROM evento";
-        $resultado = $conexao->query($sql);
-
-        if ($resultado->num_rows > 0) {
-            echo "<table>";
-            echo "<tr><th>ID</th><th>Nome</th><th>Tipo</th><th>Data</th></tr>";
-
-            while($linha = $resultado->fetch_assoc()) {
-                echo "<tr>";
-                echo "<td>" . $linha["id"] . "</td>";
-                echo "<td>" . $linha["aluno"] . "</td>";
-                echo "<td>" . $linha["turma"] . "</td>";
-                echo "</tr>";
-            }
-
-            echo "</table>";
-        } else {
-            echo "<p>Nenhum evento encontrado.</p>";
+    if ($action === 'create_matricula' && $method === 'POST') {
+        $body = json_decode(file_get_contents('php://input'), true);
+        $id_aluno = isset($body['id_aluno']) ? (int)$body['id_aluno'] : 0;
+        $id_turma = isset($body['id_turma']) ? (int)$body['id_turma'] : 0;
+        if (!$id_aluno || !$id_turma) {
+            echo json_encode(['success' => false, 'error' => 'Dados inválidos']);
+            exit;
         }
+    
+        // 🔹 Verifica se já existe matrícula igual
+      // 🔹 Verifica se o aluno já tem alguma matrícula
+      $id_matricula = $body['id_matricula'] ?? 0; // 0 se for criar
+      $stmtCheck = $conn->prepare("
+          SELECT COUNT(*) AS total 
+          FROM matriculas 
+          WHERE id_aluno = ? AND id_matricula <> ?
+      ");
+      $stmtCheck->bind_param("ii", $id_aluno, $id_matricula);
+      
+        $stmtCheck->execute();
+        $res = $stmtCheck->get_result()->fetch_assoc();
+    
+        if ($res['total'] > 0) {
+            echo json_encode(['success' => false, 'error' => 'Aluno já matriculado nesta turma!']);
+            exit;
+        }
+    
+        // 🔹 Cria nova matrícula
+        $stmt = $conn->prepare("INSERT INTO matriculas (id_aluno, id_turma, data_matricula) VALUES (?, ?, NOW())");
+        $stmt->bind_param("ii", $id_aluno, $id_turma);
+        $ok = $stmt->execute();
+    
+        if ($ok) echo json_encode(['success' => true, 'id_matricula' => $stmt->insert_id]);
+        else echo json_encode(['success' => false, 'error' => $stmt->error]);
+        exit;
+    }
 
-        $conexao->close();
-        ?>
-    </div>
-</div>
+    if ($action === 'delete_matricula') {
+        $id = (int)($_GET['id_matricula'] ?? 0);
+        if (!$id) { echo json_encode(['success' => false, 'error' => 'ID inválido']); exit; }
+        $stmt = $conn->prepare("DELETE FROM matriculas WHERE id_matricula = ?");
+        $stmt->bind_param("i", $id);
+        $ok = $stmt->execute();
+        echo json_encode(['success' => (bool)$ok]);
+        exit;
+    }
 
-</body>
-</html>
+    if ($action === 'update_matricula' && $method === 'POST') {
+        $body = json_decode(file_get_contents('php://input'), true);
+        $id_matricula = isset($body['id_matricula']) ? (int)$body['id_matricula'] : 0;
+        $id_aluno = isset($body['id_aluno']) ? (int)$body['id_aluno'] : 0;
+        $id_turma = isset($body['id_turma']) ? (int)$body['id_turma'] : 0;
+    
+        if (!$id_matricula || !$id_aluno || !$id_turma) {
+            echo json_encode(['success' => false, 'error' => 'Dados inválidos']);
+            exit;
+        }
+    
+        $stmt = $conn->prepare("UPDATE matriculas SET id_aluno = ?, id_turma = ? WHERE id_matricula = ?");
+        $stmt->bind_param("iii", $id_aluno, $id_turma, $id_matricula);
+        $ok = $stmt->execute();
+        echo json_encode(['success' => (bool)$ok]);
+        exit;
+    }
+    
+
+    echo json_encode(['success' => false, 'error' => 'Ação inválida']);
+
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+}

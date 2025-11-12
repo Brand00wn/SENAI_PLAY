@@ -1,168 +1,271 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
+/* ==============================
+   CONFIGURAÇÃO GERAL
+============================== */
+/* ==============================
+   CONFIGURAÇÃO GERAL
+============================== */
+* {
     margin: 0;
-    padding: 20px;
-}
-
-h1 {
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  body {
+    background-color: #f4f8ff;
+    color: #1a2a44;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* ==============================
+     CABEÇALHO (ajuste p/ <h1> direto no body)
+  ============================== */
+  h1 {
+    background: linear-gradient(135deg, #0057d9, #007bff);
+    color: #fff;
     text-align: center;
-    color: #333;
-}
-
-.filtros {
+    padding: 30px 20px;
+    font-size: 2rem;
+    letter-spacing: 1px;
+    font-weight: 600;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 0; /* tira espaçamento para colar no menu */
+  }
+  
+  /* ==============================
+     NAVEGAÇÃO
+  ============================== */
+  nav {
+    background-color: #ffffff;
+    border-bottom: 2px solid #e0e6f0;
+    box-shadow: 0 2px 5px rgba(0, 87, 217, 0.1);
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-#busca, #filtroTurma {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    margin-top: 10px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-}
-
-th, td {
-    padding: 12px;
-    border: 1px solid #ddd;
-    text-align: left;
-}
-
-th {
-    background-color: #e9ecef;
-    font-weight: bold;
-}
-
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-tr:hover {
-    background-color: #e6f0ff;
-}
-
-
-/* ==== ESTILO DAS PÁGINAS DE TURMAS ==== */
-
-body {
-    background-color: #f8f9fa;
-    font-family: Arial, sans-serif;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  nav ul {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    list-style: none;
     margin: 0;
-    padding: 20px;
-}
-
-.container {
+    padding: 10px 0;
+  }
+  
+  nav li {
+    margin: 10px;
+  }
+  
+  nav a {
+    text-decoration: none;
+    color: #0057d9;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+  
+  nav a:hover {
+    background-color: #0057d9;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 87, 217, 0.3);
+  }
+  
+  nav a.active {
+    background-color: #007bff;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+  }
+  
+  /* ==============================
+     CONTEÚDO PRINCIPAL (para páginas sem <main>)
+  ============================== */
+  body > form,
+  body > table,
+  body > h2 {
     max-width: 900px;
-    margin: 0 auto;
-    background-color: #fff;
+    margin: 20px auto;
+    background-color: #ffffff;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-}
-
-h1, h2 {
-    color: #333;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+  }
+  
+  body > h2 {
+    background: none;
+    box-shadow: none;
+    margin-top: 40px;
     text-align: center;
-}
-
-h2 {
-    border-bottom: 2px solid #e9ecef;
-    padding-bottom: 8px;
-    margin-bottom: 15px;
-    color: #444;
-}
-
-form div {
-    margin-bottom: 15px;
-}
-
-label {
+    color: #0057d9;
+  }
+  
+  /* ==============================
+     FORMULÁRIOS
+  ============================== */
+  form {
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto 30px auto;
+  }
+  
+  label {
     display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-input, select {
+    margin-bottom: 15px;
+    font-weight: 500;
+  }
+  
+  select,
+  input[type="text"],
+  input[type="email"] {
     width: 100%;
-    padding: 10px;
-    font-size: 15px;
+    padding: 10px 12px;
+    margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 6px;
-    box-sizing: border-box;
-}
-
-.actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-button {
-    padding: 10px 16px;
-    font-size: 15px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+  }
+  
+  input:focus,
+  select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+  }
+  
+  button {
+    background: #007bff;
+    color: #fff;
     border: none;
+    padding: 10px 20px;
     border-radius: 6px;
     cursor: pointer;
-    background-color: #007bff;
-    color: white;
-    transition: background 0.3s;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    margin-top: 15px; /* 🔹 espaço acima do botão */
 }
 
-button:hover {
-    background-color: #0056b3;
-}
-
-/* ==== TABELA DE TURMAS ==== */
-
-table {
+  
+  button:hover {
+    background: #0057d9;
+    transform: scale(1.03);
+  }
+  
+  /* ==============================
+     TABELA DE DADOS
+  ============================== */
+  table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-    margin-top: 15px;
-}
-
-th, td {
-    padding: 12px;
-    border: 1px solid #ddd;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+  
+  thead {
+    background: #007bff;
+    color: #fff;
+  }
+  
+  th, td {
+    padding: 12px 15px;
     text-align: left;
-}
-
-th {
-    background-color: #e9ecef;
-    font-weight: bold;
-}
-
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-tr:hover {
-    background-color: #e6f0ff;
-}
-
-#form-section {
-    margin-bottom: 30px;
-}
-
-/* Responsivo */
-@media (max-width: 600px) {
-    .actions {
-        flex-direction: column;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  tbody tr:hover {
+    background: #f0f8ff;
+  }
+  
+  td button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    margin-right: 5px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  td button:hover {
+    background: #0057d9;
+  }
+  
+  td button:nth-child(2) {
+    background: #dc3545;
+  }
+  
+  td button:nth-child(2):hover {
+    background: #a71d2a;
+  }
+  
+  /* ==============================
+     RODAPÉ
+  ============================== */
+  footer {
+    background-color: #0057d9;
+    color: #fff;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    margin-top: auto;
+  }
+  
+  /* ==============================
+     RESPONSIVIDADE
+  ============================== */
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 1.5rem;
+      padding: 20px 10px;
     }
-
-    button {
-        width: 100%;
+  
+    nav ul {
+      flex-direction: column;
     }
-}
+  
+    nav li {
+      margin: 5px 0;
+    }
+  
+    nav a {
+      display: block;
+      width: 90%;
+      text-align: center;
+      margin: 0 auto;
+    }
+  
+    form, table {
+      padding: 25px 15px;
+    }
+  }
+
+  .texto {
+    max-width: 900px;       /* Limita a largura para melhor leitura */
+    margin: 30px auto;      /* Espaçamento em cima e em baixo, centralizado horizontalmente */
+    padding: 20px;          /* Espaço interno para “respirar” */
+    background-color: #ffffff;  /* Fundo branco para contraste */
+    color: #333333;         /* Cor do texto mais suave para leitura */
+    font-size: 1.1rem;      /* Tamanho de fonte confortável */
+    line-height: 1.6;       /* Espaçamento entre linhas para facilitar a leitura */
+    border-radius: 10px;    /* Bordas arredondadas para suavidade */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);  /* Sombra leve para destaque */
+    text-align: justify;    /* Justifica o texto para visual mais alinhado */
+  }
+  
+  
