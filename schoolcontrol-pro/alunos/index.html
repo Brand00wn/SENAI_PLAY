@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="../assets/CSS/style.css">
+  <title>Cadastro de Alunos</title>
+  <style>
+    /* Estilos básicos para melhor visualização */
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    form div { margin-bottom: 10px; }
+    label { display: inline-block; width: 150px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    .btn-editar, .btn-excluir { padding: 5px 10px; cursor: pointer; }
+    .btn-editar { background-color: #4CAF50; color: white; border: none; }
+    .btn-excluir { background-color: #f44336; color: white; border: none; margin-left: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Cadastro de Alunos</h1>
+
+  <form id="formAluno">
+    <!-- Campo oculto para o ID (usado na edição) - O JS original usa o ID, mas vamos manter o controle no JS para evitar problemas de segurança -->
+    <input type="hidden" id="id" name="id">
+
+    <div>
+      <label for="nome">Nome:</label>
+      <input type="text" id="nome" name="nome" required>
+    </div>
+
+    <div>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+
+    <div>
+      <label for="data_nascimento">Data de Nascimento:</label>
+      <input type="date" id="data_nascimento" name="data_nascimento" required>
+    </div>
+
+    <div>
+      <button type="submit" id="btnSalvar">Cadastrar</button>
+      <button type="button" id="btnCancelar" style="display:none;">Cancelar</button>
+    </div>
+  </form>
+
+  <h2>Lista de Alunos</h2>
+  <table id="tabelaAlunos">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Data de Nascimento</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Os alunos serão inseridos aqui pelo JS -->
+    </tbody>
+  </table>
+
+  <script src="index.js"></script>
+</body>
+</html>
