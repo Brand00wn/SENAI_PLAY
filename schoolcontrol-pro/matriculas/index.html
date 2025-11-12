@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro de Matricula</title>
+  <link rel="stylesheet" href="../assets/CSS/style.css" />
+</head>
+
+<body>
+  <h1>Sistema de Cadastro Acadêmico</h1>
+
+  <nav>
+    <ul>
+      <li><a href="../index.php">Inicio</a></li>
+      <li><a href="../alunos/index.html">Alunos</a></li>
+      <li><a href="../turmas/index.html">Turmas</a></li>
+      <li><a href="../disciplinas/index.html">Disciplinas</a></li>
+      <li><a href="../professores/index.html">Professores</a></li>
+      <li><a href="../matriculas/index.html" class="active">Matrículas</a></li>
+    </ul>
+  </nav>
+
+  <h2>Cadastro de Matricula</h2>
+  <form id="formprof">
+    <label>Aluno:</label>
+    <select id="id_aluno_select"></select>
+
+    <label>Turma:</label>
+    <select id="id_turma_select"></select>
+
+    <button type="submit">Matricular</button>
+  </form>
+
+  <h2>Lista de Matriculas</h2>
+  <table id="list_matriculas">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Aluno</th>
+        <th>Turma</th>
+        <th>Data de Matricula</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="matriculas.js"></script>
+</body>
+
+</html>
